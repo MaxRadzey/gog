@@ -1,17 +1,26 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/MaxRadzey/gog/internal/app"
 	"github.com/MaxRadzey/gog/internal/config"
 )
 
 func main() {
-	AppConfig := config.New()
+	cfg := config.New()
+	config.ParseEnv(cfg)
+	config.ParseFlags(cfg)
 
-	config.ParseEnv(AppConfig)
-	config.ParseFlags(AppConfig)
+	a, err := app.New(cfg)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to init app: %v\n", err)
+		os.Exit(1)
+	}
 
-	if err := app.Run(AppConfig); err != nil {
-		panic(err)
+	if err := a.Run(); err != nil {
+		fmt.Fprintln(os.Stderr, "failed to run app", err)
+		os.Exit(1)
 	}
 }
