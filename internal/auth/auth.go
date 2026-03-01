@@ -49,6 +49,19 @@ func ValidateCookie(cookie *http.Cookie, secret string) (int64, error) {
 	return userID, nil
 }
 
+// ClearAuthCookie удаляет куку сессии (устанавливает пустое значение и истекающий срок).
+func ClearAuthCookie(w http.ResponseWriter) {
+	cookie := &http.Cookie{
+		Name:     CookieName,
+		Value:    "",
+		Path:     "/",
+		MaxAge:   -1,
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+	}
+	http.SetCookie(w, cookie)
+}
+
 // NewCookie возвращает подписанную куку для userID. Используется в тестах.
 func NewCookie(userID int64, secret string) *http.Cookie {
 	value := cookieValue(userID, secret)

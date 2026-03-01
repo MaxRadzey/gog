@@ -53,3 +53,34 @@ func Register(h *handler.Handler) gin.HandlerFunc {
 		c.Status(http.StatusOK)
 	}
 }
+
+// Login возвращает обработчик для POST /api/user/login.
+func Login(h *handler.Handler) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req LoginRequest
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+			return
+		}
+		u, err := h.Services.User.Authenticate(c.Request.Context(), req.Login, req.Password)
+		if err != nil {
+			var invalid *service.ErrInvalidCredentials
+			if errors.As(err, &invalid) {
+				c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid login or password"})
+				return
+			}
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "internal error"})
+			return
+		}
+		auth.SetAuthCookie(c.Writer, u.ID, h.CookieSecret)
+		c.Status(http.StatusOK)
+	}
+}
+
+// Logout возвращает обработчик для POST /api/user/logout.
+func Logout(h *handler.Handler) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		auth.ClearAuthCookie(c.Writer)
+		c.Status(http.StatusOK)
+	}
+}

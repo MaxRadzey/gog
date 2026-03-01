@@ -19,6 +19,8 @@ func SetupRouter(h *handler.Handler) *gin.Engine {
 	api := r.Group("/api")
 	{
 		api.POST("/user/register", user.Register(h))
+		api.POST("/user/login", user.Login(h))
+		api.POST("/user/logout", user.Logout(h))
 	}
 
 	return r

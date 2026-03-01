@@ -10,3 +10,9 @@ type RegisterRequest struct {
 type RegisterResponse struct {
 	UserID int64 `json:"user_id"`
 }
+
+// LoginRequest — тело запроса входа (логин + пароль).
+type LoginRequest struct {
+	Login    string `json:"login" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
