@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/MaxRadzey/gog/internal/repository/postgres"
 	"github.com/MaxRadzey/gog/internal/storage"
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 var testDB *sql.DB

@@ -57,7 +57,7 @@ func InitializeStorage(dsn string, opts ...StorageOption) (*Storage, error) {
 	if dsn == "" {
 		return nil, errors.New("database DSN required")
 	}
-	
+
 	cfg := &storageConfig{
 		migrationsPath: "",
 		maxOpenConns:   0,
@@ -66,7 +66,7 @@ func InitializeStorage(dsn string, opts ...StorageOption) (*Storage, error) {
 	for _, opt := range opts {
 		opt(cfg)
 	}
-	
+
 	if err := RunMigrations(dsn, cfg.migrationsPath); err != nil {
 		return nil, fmt.Errorf("migrations: %w", err)
 	}
@@ -78,14 +78,14 @@ func InitializeStorage(dsn string, opts ...StorageOption) (*Storage, error) {
 		_ = db.Close()
 		return nil, fmt.Errorf("ping db: %w", err)
 	}
-	
+
 	if cfg.maxOpenConns > 0 {
 		db.SetMaxOpenConns(cfg.maxOpenConns)
 	}
 	if cfg.maxIdleConns > 0 {
 		db.SetMaxIdleConns(cfg.maxIdleConns)
 	}
-	
+
 	return &Storage{
 		db:             db,
 		userRepository: postgres.NewUserRepository(db),
