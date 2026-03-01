@@ -19,3 +19,12 @@ type ErrInvalidCredentials struct {
 func (e *ErrInvalidCredentials) Error() string {
 	return fmt.Sprintf("invalid credentials: %s", e.Login)
 }
+
+// ErrValidation — ошибка валидации входных данных (пустые поля, длина и т.д.).
+type ErrValidation struct {
+	Msg string
+}
+
+func (e *ErrValidation) Error() string {
+	return e.Msg
+}

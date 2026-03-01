@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"strconv"
 
 	"github.com/jackc/pgx/v5/pgconn"
 	"golang.org/x/crypto/bcrypt"
@@ -20,8 +21,28 @@ func NewUserService(repo repository.UserRepository) *UserService {
 	return &UserService{repo: repo}
 }
 
+// Минимальная длина логина и пароля.
+const (
+	MinLoginLength    = 3
+	MinPasswordLength = 6
+)
+
 // Register создаёт пользователя. Пароль хэшируется. При занятом логине возвращает ErrDuplicateLogin.
+// При невалидных данных (пустой/короткий логин или пароль) возвращает ErrValidation.
 func (s *UserService) Register(ctx context.Context, login, plainPassword string) (userID int64, err error) {
+	if login == "" {
+		return 0, &ErrValidation{Msg: "login is required"}
+	}
+	if len(login) < MinLoginLength {
+		return 0, &ErrValidation{Msg: "login must be at least " + strconv.Itoa(MinLoginLength) + " characters"}
+	}
+	if plainPassword == "" {
+		return 0, &ErrValidation{Msg: "password is required"}
+	}
+	if len(plainPassword) < MinPasswordLength {
+		return 0, &ErrValidation{Msg: "password must be at least " + strconv.Itoa(MinPasswordLength) + " characters"}
+	}
+
 	hash, err := bcrypt.GenerateFromPassword([]byte(plainPassword), bcrypt.DefaultCost)
 	if err != nil {
 		return 0, err

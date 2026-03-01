@@ -41,6 +41,11 @@ func Register(h *handler.Handler) gin.HandlerFunc {
 				c.JSON(http.StatusConflict, gin.H{"error": "login already taken"})
 				return
 			}
+			var val *service.ErrValidation
+			if errors.As(err, &val) {
+				c.JSON(http.StatusBadRequest, gin.H{"error": val.Error()})
+				return
+			}
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "internal error"})
 			return
 		}

@@ -41,7 +41,7 @@ func TestUserService_Register(t *testing.T) {
 			Create(gomock.Any(), "taken", gomock.Any()).
 			Return(int64(0), &pgconn.PgError{Code: "23505"})
 
-		id, err := svc.Register(ctx, "taken", "pass")
+		id, err := svc.Register(ctx, "taken", "pass12")
 		if err == nil {
 			t.Fatal("expected error")
 		}
@@ -54,6 +54,62 @@ func TestUserService_Register(t *testing.T) {
 		}
 		if dup.Login != "taken" {
 			t.Errorf("ErrDuplicateLogin.Login = %q, want taken", dup.Login)
+		}
+	})
+
+	t.Run("validation empty login", func(t *testing.T) {
+		_, err := svc.Register(ctx, "", "secret12")
+		if err == nil {
+			t.Fatal("expected error")
+		}
+		var val *ErrValidation
+		if !errors.As(err, &val) {
+			t.Fatalf("expected *ErrValidation, got %T", err)
+		}
+		if val.Msg != "login is required" {
+			t.Errorf("ErrValidation.Msg = %q, want login is required", val.Msg)
+		}
+	})
+
+	t.Run("validation login too short", func(t *testing.T) {
+		_, err := svc.Register(ctx, "ab", "secret12")
+		if err == nil {
+			t.Fatal("expected error")
+		}
+		var val *ErrValidation
+		if !errors.As(err, &val) {
+			t.Fatalf("expected *ErrValidation, got %T", err)
+		}
+		if val.Msg != "login must be at least 3 characters" {
+			t.Errorf("ErrValidation.Msg = %q", val.Msg)
+		}
+	})
+
+	t.Run("validation empty password", func(t *testing.T) {
+		_, err := svc.Register(ctx, "alice", "")
+		if err == nil {
+			t.Fatal("expected error")
+		}
+		var val *ErrValidation
+		if !errors.As(err, &val) {
+			t.Fatalf("expected *ErrValidation, got %T", err)
+		}
+		if val.Msg != "password is required" {
+			t.Errorf("ErrValidation.Msg = %q", val.Msg)
+		}
+	})
+
+	t.Run("validation password too short", func(t *testing.T) {
+		_, err := svc.Register(ctx, "alice", "12345")
+		if err == nil {
+			t.Fatal("expected error")
+		}
+		var val *ErrValidation
+		if !errors.As(err, &val) {
+			t.Fatalf("expected *ErrValidation, got %T", err)
+		}
+		if val.Msg != "password must be at least 6 characters" {
+			t.Errorf("ErrValidation.Msg = %q", val.Msg)
 		}
 	})
 }
