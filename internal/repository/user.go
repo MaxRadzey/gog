@@ -1,5 +1,7 @@
 package repository
 
+//go:generate go run go.uber.org/mock/mockgen@latest -destination=mocks/mock_user_repository.go -package=mocks github.com/MaxRadzey/gog/internal/repository UserRepository
+
 import (
 	"context"
 	"time"

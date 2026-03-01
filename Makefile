@@ -17,3 +17,7 @@ run:
 # Запуск всех тестов одной командой
 test:
 	go test ./... -v -count=1
+
+# Генерация моков (требует mockgen в PATH).
+generate:
+	go generate ./internal/repository/...
