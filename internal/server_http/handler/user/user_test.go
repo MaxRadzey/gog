@@ -43,7 +43,7 @@ func TestRegister_Success(t *testing.T) {
 		Return(int64(1), nil)
 
 	container := &testRepoContainer{repo: mockRepo}
-	services := service.NewServices(container)
+	services := service.NewServices(container, "dev-encryption-key-32bytes-long!")
 	h := handler.New(services, "test-secret")
 
 	body := `{"login":"alice","password":"secret12"}`
@@ -80,7 +80,7 @@ func TestRegister_DuplicateLogin(t *testing.T) {
 		Return(int64(0), &pgconn.PgError{Code: "23505"})
 
 	container := &testRepoContainer{repo: mockRepo}
-	services := service.NewServices(container)
+	services := service.NewServices(container, "dev-encryption-key-32bytes-long!")
 	h := handler.New(services, "test-secret")
 
 	body := `{"login":"taken","password":"secret12"}`
@@ -102,7 +102,7 @@ func TestRegister_DuplicateLogin(t *testing.T) {
 
 func TestRegister_ValidationLoginTooShort(t *testing.T) {
 	container := &testRepoContainer{repo: mocks.NewMockUserRepository(gomock.NewController(t))}
-	services := service.NewServices(container)
+	services := service.NewServices(container, "dev-encryption-key-32bytes-long!")
 	h := handler.New(services, "test-secret")
 
 	body := `{"login":"ab","password":"secret12"}`
@@ -125,7 +125,7 @@ func TestRegister_ValidationLoginTooShort(t *testing.T) {
 
 func TestRegister_ValidationPasswordTooShort(t *testing.T) {
 	container := &testRepoContainer{repo: mocks.NewMockUserRepository(gomock.NewController(t))}
-	services := service.NewServices(container)
+	services := service.NewServices(container, "dev-encryption-key-32bytes-long!")
 	h := handler.New(services, "test-secret")
 
 	body := `{"login":"alice","password":"12345"}`
@@ -148,7 +148,7 @@ func TestRegister_ValidationPasswordTooShort(t *testing.T) {
 
 func TestRegister_ValidationEmptyLogin(t *testing.T) {
 	container := &testRepoContainer{repo: mocks.NewMockUserRepository(gomock.NewController(t))}
-	services := service.NewServices(container)
+	services := service.NewServices(container, "dev-encryption-key-32bytes-long!")
 	h := handler.New(services, "test-secret")
 
 	body := `{"login":"","password":"secret12"}`
@@ -170,7 +170,7 @@ func TestRegister_ValidationEmptyLogin(t *testing.T) {
 
 func TestRegister_InvalidJSON(t *testing.T) {
 	container := &testRepoContainer{repo: mocks.NewMockUserRepository(gomock.NewController(t))}
-	services := service.NewServices(container)
+	services := service.NewServices(container, "dev-encryption-key-32bytes-long!")
 	h := handler.New(services, "test-secret")
 
 	body := `{`
@@ -200,7 +200,7 @@ func TestRegister_InternalError(t *testing.T) {
 		Return(int64(0), errors.New("db error"))
 
 	container := &testRepoContainer{repo: mockRepo}
-	services := service.NewServices(container)
+	services := service.NewServices(container, "dev-encryption-key-32bytes-long!")
 	h := handler.New(services, "test-secret")
 
 	body := `{"login":"alice","password":"secret12"}`
@@ -236,7 +236,7 @@ func TestLogin_Success(t *testing.T) {
 		Return(&repository.User{ID: 1, Login: "alice", PasswordHash: string(hash)}, nil)
 
 	container := &testRepoContainer{repo: mockRepo}
-	services := service.NewServices(container)
+	services := service.NewServices(container, "dev-encryption-key-32bytes-long!")
 	h := handler.New(services, "test-secret")
 
 	body := `{"login":"alice","password":"secret12"}`
@@ -272,7 +272,7 @@ func TestLogin_InvalidCredentials(t *testing.T) {
 		Return(nil, nil)
 
 	container := &testRepoContainer{repo: mockRepo}
-	services := service.NewServices(container)
+	services := service.NewServices(container, "dev-encryption-key-32bytes-long!")
 	h := handler.New(services, "test-secret")
 
 	body := `{"login":"alice","password":"wrong"}`
@@ -302,7 +302,7 @@ func TestLogin_InvalidCredentialsWrongPassword(t *testing.T) {
 		Return(&repository.User{ID: 1, Login: "alice", PasswordHash: string(hash)}, nil)
 
 	container := &testRepoContainer{repo: mockRepo}
-	services := service.NewServices(container)
+	services := service.NewServices(container, "dev-encryption-key-32bytes-long!")
 	h := handler.New(services, "test-secret")
 
 	body := `{"login":"alice","password":"wrong"}`
@@ -320,7 +320,7 @@ func TestLogin_InvalidCredentialsWrongPassword(t *testing.T) {
 
 func TestLogin_InvalidJSON(t *testing.T) {
 	container := &testRepoContainer{repo: mocks.NewMockUserRepository(gomock.NewController(t))}
-	services := service.NewServices(container)
+	services := service.NewServices(container, "dev-encryption-key-32bytes-long!")
 	h := handler.New(services, "test-secret")
 
 	body := `{`
@@ -341,7 +341,7 @@ func TestLogin_InvalidJSON(t *testing.T) {
 
 func TestLogin_EmptyLogin(t *testing.T) {
 	container := &testRepoContainer{repo: mocks.NewMockUserRepository(gomock.NewController(t))}
-	services := service.NewServices(container)
+	services := service.NewServices(container, "dev-encryption-key-32bytes-long!")
 	h := handler.New(services, "test-secret")
 
 	body := `{"login":"","password":"secret12"}`
@@ -367,7 +367,7 @@ func TestLogin_InternalError(t *testing.T) {
 		Return(nil, errors.New("db error"))
 
 	container := &testRepoContainer{repo: mockRepo}
-	services := service.NewServices(container)
+	services := service.NewServices(container, "dev-encryption-key-32bytes-long!")
 	h := handler.New(services, "test-secret")
 
 	body := `{"login":"alice","password":"secret12"}`
@@ -388,7 +388,7 @@ func TestLogin_InternalError(t *testing.T) {
 
 func TestLogout_Success(t *testing.T) {
 	container := &testRepoContainer{repo: mocks.NewMockUserRepository(gomock.NewController(t))}
-	services := service.NewServices(container)
+	services := service.NewServices(container, "dev-encryption-key-32bytes-long!")
 	h := handler.New(services, "test-secret")
 
 	req := httptest.NewRequest(http.MethodPost, "/api/user/logout", nil)

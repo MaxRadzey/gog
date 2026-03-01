@@ -38,7 +38,7 @@ func New(cfg *config.Config) (*App, error) {
 		return nil, err
 	}
 
-	services := service.NewServices(storageResult)
+	services := service.NewServices(storageResult, cfg.EncryptionKey)
 	h := handler.New(services, cfg.SigningKey)
 	router := server_http.SetupRouter(h)
 

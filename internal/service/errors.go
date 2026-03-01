@@ -1,6 +1,9 @@
 package service
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 // ErrDuplicateLogin — логин уже занят при регистрации.
 type ErrDuplicateLogin struct {
@@ -28,3 +31,6 @@ type ErrValidation struct {
 func (e *ErrValidation) Error() string {
 	return e.Msg
 }
+
+// ErrSecretNotFound — секрет не найден или не принадлежит пользователю.
+var ErrSecretNotFound = errors.New("secret not found")

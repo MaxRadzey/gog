@@ -2,6 +2,7 @@
 package service
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"regexp"
@@ -100,4 +101,36 @@ func ValidateBankCardPayload(p *BankCardPayload) error {
 // UnknownSecretTypeError возвращает ErrValidation для неизвестного типа.
 func UnknownSecretTypeError(secretType string) error {
 	return &ErrValidation{Msg: "unknown secret type: " + secretType}
+}
+
+// ValidatePayloadByType разбирает payloadJSON по secretType, валидирует и возвращает ошибку при неверных данных.
+func ValidatePayloadByType(secretType string, payloadJSON []byte) error {
+	switch secretType {
+	case SecretTypeLoginPassword:
+		var p LoginPasswordPayload
+		if err := json.Unmarshal(payloadJSON, &p); err != nil {
+			return &ErrValidation{Msg: "invalid JSON: " + err.Error()}
+		}
+		return ValidateLoginPasswordPayload(&p)
+	case SecretTypeText:
+		var p TextPayload
+		if err := json.Unmarshal(payloadJSON, &p); err != nil {
+			return &ErrValidation{Msg: "invalid JSON: " + err.Error()}
+		}
+		return ValidateTextPayload(&p)
+	case SecretTypeBinary:
+		var p BinaryPayload
+		if err := json.Unmarshal(payloadJSON, &p); err != nil {
+			return &ErrValidation{Msg: "invalid JSON: " + err.Error()}
+		}
+		return ValidateBinaryPayload(&p)
+	case SecretTypeBankCard:
+		var p BankCardPayload
+		if err := json.Unmarshal(payloadJSON, &p); err != nil {
+			return &ErrValidation{Msg: "invalid JSON: " + err.Error()}
+		}
+		return ValidateBankCardPayload(&p)
+	default:
+		return UnknownSecretTypeError(secretType)
+	}
 }
