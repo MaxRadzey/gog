@@ -18,4 +18,7 @@ func ParseEnv(config *Config) {
 	if v := os.Getenv("SECRET_KEY"); v != "" {
 		config.SigningKey = v
 	}
+	if v := os.Getenv("ENCRYPTION_KEY"); v != "" {
+		config.EncryptionKey = v
+	}
 }
