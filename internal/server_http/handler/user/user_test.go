@@ -29,6 +29,10 @@ func (c *testRepoContainer) UserRepository() repository.UserRepository {
 	return c.repo
 }
 
+func (c *testRepoContainer) SecretRepository() repository.SecretRepository {
+	return nil
+}
+
 func TestRegister_Success(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()

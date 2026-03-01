@@ -16,8 +16,9 @@ var testDB *sql.DB
 
 // testRepos — все репозитории для тестов. Один setup, один TRUNCATE.
 type testRepos struct {
-	User *postgres.UserRepository
-	DB   *sql.DB
+	User   *postgres.UserRepository
+	Secret *postgres.SecretRepository
+	DB     *sql.DB
 }
 
 func TestMain(m *testing.M) {
@@ -51,7 +52,7 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-// setupDB очищает таблицу users и возвращает репозитории для тестов.
+// setupDB очищает таблицы users и secrets (CASCADE) и возвращает репозитории для тестов.
 func setupDB(t *testing.T) *testRepos {
 	t.Helper()
 	_, err := testDB.ExecContext(context.Background(), "TRUNCATE TABLE users RESTART IDENTITY CASCADE")
@@ -59,7 +60,8 @@ func setupDB(t *testing.T) *testRepos {
 		t.Fatalf("truncate: %v", err)
 	}
 	return &testRepos{
-		User: postgres.NewUserRepository(testDB),
-		DB:   testDB,
+		User:   postgres.NewUserRepository(testDB),
+		Secret: postgres.NewSecretRepository(testDB),
+		DB:     testDB,
 	}
 }

@@ -42,13 +42,19 @@ func WithMaxIdleConns(n int) StorageOption {
 
 // Storage — подключение к БД и репозитории.
 type Storage struct {
-	db             *sql.DB
-	userRepository repository.UserRepository
+	db               *sql.DB
+	userRepository   repository.UserRepository
+	secretRepository repository.SecretRepository
 }
 
 // UserRepository возвращает репозиторий пользователей.
 func (s *Storage) UserRepository() repository.UserRepository {
 	return s.userRepository
+}
+
+// SecretRepository возвращает репозиторий секретов.
+func (s *Storage) SecretRepository() repository.SecretRepository {
+	return s.secretRepository
 }
 
 // InitializeStorage запускает миграции, подключается к БД и создаёт репозитории.
@@ -87,8 +93,9 @@ func InitializeStorage(dsn string, opts ...StorageOption) (*Storage, error) {
 	}
 
 	return &Storage{
-		db:             db,
-		userRepository: postgres.NewUserRepository(db),
+		db:               db,
+		userRepository:   postgres.NewUserRepository(db),
+		secretRepository: postgres.NewSecretRepository(db),
 	}, nil
 }
 
