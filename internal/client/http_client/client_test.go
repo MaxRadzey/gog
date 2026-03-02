@@ -176,3 +176,25 @@ func TestClient_ListSecrets_200(t *testing.T) {
 		t.Errorf("list: got %v", list)
 	}
 }
+
+func TestClient_UpdateSecret_200(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+	client, _ := New(server.URL)
+	if err := client.UpdateSecret(context.Background(), 1, json.RawMessage(`{"content":"updated"}`)); err != nil {
+		t.Fatalf("UpdateSecret: %v", err)
+	}
+}
+
+func TestClient_DeleteSecret_200(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+	client, _ := New(server.URL)
+	if err := client.DeleteSecret(context.Background(), 1); err != nil {
+		t.Fatalf("DeleteSecret: %v", err)
+	}
+}
