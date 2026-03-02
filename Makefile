@@ -14,9 +14,14 @@ local:
 run:
 	go run cmd/gog/main.go
 
+# Исключения из покрытия берём из codecov.yml (ignore)
+COVER_EXCLUDE := $(shell grep -E '^\s+-\s+"' codecov.yml 2>/dev/null | sed 's/.*"\([^"]*\)".*/\1/' | tr -d '*' | tr '/' '\n' | grep -v '^$$' | sort -u | sed 's/^/\//' | sed 's/$$/|/' | tr -d '\n' | sed 's/|$$//')
+COVER_PKGS := $(shell go list ./... | grep -E -v '$(COVER_EXCLUDE)' | tr '\n' ',' | sed 's/,$$//')
+
 # Запуск всех тестов с подсчётом покрытия (в конце выводится общий % покрытия)
 test:
-	go test ./... -v -count=1 -coverprofile=coverage.out
+	go test ./... -v -count=1 -coverprofile=coverage.out -coverpkg=$(COVER_PKGS)
+	@echo ""
 	@echo "=== Покрытие тестами ==="
 	@go tool cover -func=coverage.out | grep total | awk '{print "Общий процент покрытия: " $$3}'
 
