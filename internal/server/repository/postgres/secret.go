@@ -7,17 +7,17 @@ import (
 	"github.com/MaxRadzey/gog/internal/server/repository"
 )
 
-// SecretRepository — репозиторий секретов в PostgreSQL.
+// SecretRepository хранит и читает секреты в таблице secrets.
 type SecretRepository struct {
 	db *sql.DB
 }
 
-// NewSecretRepository создаёт репозиторий секретов.
+// NewSecretRepository создаёт репозиторий по переданному *sql.DB.
 func NewSecretRepository(db *sql.DB) *SecretRepository {
 	return &SecretRepository{db: db}
 }
 
-// Create сохраняет секрет и возвращает его id.
+// Create вставляет секрет (user_id, secret_type, data), возвращает id.
 func (r *SecretRepository) Create(ctx context.Context, userID int64, secretType string, data []byte) (int64, error) {
 	var id int64
 	err := r.db.QueryRowContext(ctx,
@@ -30,7 +30,7 @@ func (r *SecretRepository) Create(ctx context.Context, userID int64, secretType 
 	return id, nil
 }
 
-// GetByID возвращает секрет по id, только если он принадлежит пользователю и не удалён.
+// GetByID возвращает секрет по id и user_id, если не удалён.
 func (r *SecretRepository) GetByID(ctx context.Context, id, userID int64) (*repository.Secret, error) {
 	var s repository.Secret
 	err := r.db.QueryRowContext(ctx,
@@ -47,7 +47,7 @@ func (r *SecretRepository) GetByID(ctx context.Context, id, userID int64) (*repo
 	return &s, nil
 }
 
-// ListByUserID возвращает все не удалённые секреты пользователя.
+// ListByUserID возвращает все секреты пользователя (не удалённые), по порядку id.
 func (r *SecretRepository) ListByUserID(ctx context.Context, userID int64) ([]*repository.Secret, error) {
 	rows, err := r.db.QueryContext(ctx,
 		`SELECT id, user_id, secret_type, data, created_at, updated_at, is_deleted
@@ -70,7 +70,7 @@ func (r *SecretRepository) ListByUserID(ctx context.Context, userID int64) ([]*r
 	return list, rows.Err()
 }
 
-// Update обновляет данные секрета (только свой и не удалённый).
+// Update обновляет поле data секрета по id и user_id.
 func (r *SecretRepository) Update(ctx context.Context, id, userID int64, data []byte) error {
 	result, err := r.db.ExecContext(ctx,
 		`UPDATE secrets SET data = $1, updated_at = NOW() WHERE id = $2 AND user_id = $3 AND NOT is_deleted`,
@@ -86,7 +86,7 @@ func (r *SecretRepository) Update(ctx context.Context, id, userID int64, data []
 	return nil
 }
 
-// Delete помечает секрет как удалённый.
+// Delete делает soft delete: выставляет is_deleted для секрета по id и user_id.
 func (r *SecretRepository) Delete(ctx context.Context, id, userID int64) error {
 	result, err := r.db.ExecContext(ctx,
 		`UPDATE secrets SET is_deleted = TRUE, updated_at = NOW() WHERE id = $1 AND user_id = $2 AND NOT is_deleted`,

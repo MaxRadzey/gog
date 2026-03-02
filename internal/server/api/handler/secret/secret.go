@@ -1,3 +1,4 @@
+// Package secret — HTTP-хендлеры для CRUD секретов: создание, список, получение по id, обновление, удаление.
 package secret
 
 import (
@@ -12,7 +13,7 @@ import (
 	"github.com/MaxRadzey/gog/internal/server/service"
 )
 
-// Create возвращает обработчик POST /api/secret — создание секрета.
+// Create — обработчик POST /api/secret, создаёт секрет.
 func Create(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userID, err := handler.GetUserID(c)
@@ -39,7 +40,7 @@ func Create(h *handler.Handler) gin.HandlerFunc {
 	}
 }
 
-// List возвращает обработчик GET /api/secret — список секретов пользователя.
+// List — обработчик GET /api/secret, возвращает список секретов.
 func List(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userID, err := handler.GetUserID(c)
@@ -60,7 +61,7 @@ func List(h *handler.Handler) gin.HandlerFunc {
 	}
 }
 
-// GetByID возвращает обработчик GET /api/secret/:id — один секрет по id.
+// GetByID — обработчик GET /api/secret/:id, возвращает один секрет.
 func GetByID(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userID, err := handler.GetUserID(c)
@@ -86,7 +87,7 @@ func GetByID(h *handler.Handler) gin.HandlerFunc {
 	}
 }
 
-// Update возвращает обработчик PUT /api/secret/:id — обновление данных секрета.
+// Update — обработчик PUT /api/secret/:id, обновляет данные секрета.
 func Update(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userID, err := handler.GetUserID(c)
@@ -122,7 +123,7 @@ func Update(h *handler.Handler) gin.HandlerFunc {
 	}
 }
 
-// Delete возвращает обработчик DELETE /api/secret/:id — удаление секрета.
+// Delete — обработчик DELETE /api/secret/:id, удаляет секрет.
 func Delete(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userID, err := handler.GetUserID(c)

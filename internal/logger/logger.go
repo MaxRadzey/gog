@@ -1,14 +1,14 @@
-// Package logger предоставляет общий логгер (zap) для клиента и сервера.
+// Package logger — общий логгер на zap для клиента и сервера.
 package logger
 
 import (
 	"go.uber.org/zap"
 )
 
-// Log — глобальный логгер. По умолчанию no-op; инициализируется через Initialize.
+// Log — глобальный экземпляр логгера. До вызова Initialize — no-op.
 var Log *zap.Logger = zap.NewNop()
 
-// Initialize настраивает логгер по уровню (debug, info, warn, error).
+// Initialize поднимает логгер с заданным уровнем (debug, info, warn, error).
 func Initialize(level string) error {
 	lvl, err := zap.ParseAtomicLevel(level)
 	if err != nil {

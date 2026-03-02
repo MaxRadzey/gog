@@ -1,3 +1,4 @@
+// Package cli — интерактивный цикл: читает строки из stdin, парсит команду и аргументы, вызывает команду из реестра и выводит результат.
 package cli
 
 import (
@@ -11,6 +12,7 @@ import (
 	"github.com/MaxRadzey/gog/internal/logger"
 )
 
+// Run запускает цикл чтения команд из stdin и выполнения через registry. Завершается при EOF или ошибке чтения.
 func Run(ctx context.Context, registry command.CommandRegistry) {
 	reader := bufio.NewScanner(os.Stdin)
 

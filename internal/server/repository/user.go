@@ -1,3 +1,4 @@
+// Package repository — интерфейсы и сущности для хранения пользователей и секретов.
 package repository
 
 //go:generate go run go.uber.org/mock/mockgen@latest -destination=mocks/mock_user_repository.go -package=mocks github.com/MaxRadzey/gog/internal/server/repository UserRepository
@@ -7,7 +8,7 @@ import (
 	"time"
 )
 
-// User — сущность пользователя из БД.
+// User — запись пользователя (логин, хэш пароля, метаданные).
 type User struct {
 	ID           int64
 	Login        string
@@ -17,7 +18,7 @@ type User struct {
 	IsDeleted    bool
 }
 
-// UserRepository — интерфейс репозитория пользователей.
+// UserRepository — создание пользователя, получение по логину и по id.
 type UserRepository interface {
 	Create(ctx context.Context, login, passwordHash string) (int64, error)
 	GetByLogin(ctx context.Context, login string) (*User, error)

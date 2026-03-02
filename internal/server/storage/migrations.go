@@ -14,7 +14,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// RunMigrations запускает миграции по DSN и пути к папке с миграциями.
+// RunMigrations выполняет миграции по DSN; migrationsPath — папка с .up/.down.sql (по умолчанию "migrations").
 func RunMigrations(dsn string, migrationsPath string) error {
 	if dsn == "" {
 		return nil

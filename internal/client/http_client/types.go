@@ -2,35 +2,35 @@ package http_client
 
 import "encoding/json"
 
-// RegisterRequest — тело запроса POST /api/user/register.
+// RegisterRequest — запрос на регистрацию (login + password).
 type RegisterRequest struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
 }
 
-// LoginRequest — тело запроса POST /api/user/login.
+// LoginRequest — запрос на вход.
 type LoginRequest struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
 }
 
-// CreateSecretRequest — тело запроса POST /api/secret.
+// CreateSecretRequest — запрос на создание секрета (тип + данные в JSON).
 type CreateSecretRequest struct {
 	SecretType string          `json:"secret_type"`
 	Data       json.RawMessage `json:"data"`
 }
 
-// CreateSecretResponse — ответ после создания секрета.
+// CreateSecretResponse — ответ создания секрета, возвращает id.
 type CreateSecretResponse struct {
 	ID int64 `json:"id"`
 }
 
-// UpdateSecretRequest — тело запроса PUT /api/secret/:id.
+// UpdateSecretRequest — обновление секрета, только поле data.
 type UpdateSecretRequest struct {
 	Data json.RawMessage `json:"data"`
 }
 
-// SecretResponse — один секрет в ответе (GET /api/secret, GET /api/secret/:id).
+// SecretResponse — один секрет в ответе списка или get по id.
 type SecretResponse struct {
 	ID         int64           `json:"id"`
 	UserID     int64           `json:"user_id"`

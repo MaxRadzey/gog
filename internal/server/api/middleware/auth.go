@@ -1,3 +1,4 @@
+// Package middleware — Gin middleware: проверка авторизации по куке и логирование запросов/ответов.
 package middleware
 
 import (
@@ -9,7 +10,7 @@ import (
 	"github.com/MaxRadzey/gog/internal/server/auth"
 )
 
-// RequireAuth возвращает Gin middleware: проверяет куку, при валидной куке кладёт userID в контекст.
+// RequireAuth проверяет сессионную куку; при успехе кладёт userID в контекст, иначе 401.
 func RequireAuth(secret string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		cookie, err := c.Request.Cookie(auth.CookieName)

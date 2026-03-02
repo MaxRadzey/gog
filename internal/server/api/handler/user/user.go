@@ -1,3 +1,4 @@
+// Package user — HTTP-хендлеры пользователей: регистрация, вход, выход.
 package user
 
 import (
@@ -13,7 +14,7 @@ import (
 	"github.com/MaxRadzey/gog/internal/server/service"
 )
 
-// Register возвращает обработчик для POST /api/user/register.
+// Register — обработчик POST /api/user/register.
 func Register(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req RegisterRequest
@@ -54,7 +55,7 @@ func Register(h *handler.Handler) gin.HandlerFunc {
 	}
 }
 
-// Login возвращает обработчик для POST /api/user/login.
+// Login — обработчик POST /api/user/login.
 func Login(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req LoginRequest
@@ -77,7 +78,7 @@ func Login(h *handler.Handler) gin.HandlerFunc {
 	}
 }
 
-// Logout возвращает обработчик для POST /api/user/logout.
+// Logout — обработчик POST /api/user/logout.
 func Logout(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		auth.ClearAuthCookie(c.Writer)

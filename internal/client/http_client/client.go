@@ -1,3 +1,5 @@
+// Package http_client — клиент к HTTP API сервера: регистрация, логин, CRUD секретов.
+// Хранит сессию в cookie jar, все запросы идут с таймаутом.
 package http_client
 
 import (
@@ -13,16 +15,16 @@ import (
 	"time"
 )
 
-// Client — HTTP-клиент к API GophKeeper.
+// Client держит базовый URL и HTTP-клиент с cookie jar.
 type Client struct {
 	baseURL string
 	http    *http.Client
 }
 
-// RequestTimeout — таймаут на один HTTP-запрос.
+// RequestTimeout — таймаут на один HTTP-запрос (5 сек).
 const RequestTimeout = 5 * time.Second
 
-// New создаёт клиент.
+// New создаёт клиент по базовому URL (например http://localhost:8080).
 func New(baseURL string) (*Client, error) {
 	jar, err := cookiejar.New(nil)
 	if err != nil {

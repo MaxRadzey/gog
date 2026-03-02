@@ -1,12 +1,12 @@
-// Package config загружает настройки клиента из флагов и переменных окружения.
+// Package config — настройки клиента: URL сервера из env (SERVER_URL) и флагов (-server, -s).
 package config
 
-// Config — настройки клиента (URL сервера).
+// Config хранит настройки клиента.
 type Config struct {
-	ServerURL string // базовый URL сервера (например http://localhost:8080)
+	ServerURL string // базовый URL API (например http://localhost:8080)
 }
 
-// New возвращает конфиг с дефолтами, затем подставляет env и флаги.
+// New создаёт конфиг с дефолтом, затем подставляет переменные окружения и флаги.
 func New() *Config {
 	cfg := &Config{
 		ServerURL: "http://localhost:8080",

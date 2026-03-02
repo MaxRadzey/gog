@@ -11,12 +11,12 @@ import (
 	"github.com/MaxRadzey/gog/internal/server/repository"
 )
 
-// UserService — бизнес-логика регистрации и аутентификации пользователей.
+// UserService — регистрация (с хэшированием пароля) и аутентификация по логину/паролю.
 type UserService struct {
 	repo repository.UserRepository
 }
 
-// NewUserService создаёт сервис пользователей.
+// NewUserService создаёт сервис с переданным репозиторием.
 func NewUserService(repo repository.UserRepository) *UserService {
 	return &UserService{repo: repo}
 }
@@ -26,7 +26,7 @@ const (
 	MinPasswordLength = 6
 )
 
-// Register создаёт пользователя. Пароль хэшируется.
+// Register создаёт пользователя (пароль хэшируется bcrypt).
 func (s *UserService) Register(ctx context.Context, login, plainPassword string) (userID int64, err error) {
 	if login == "" {
 		return 0, &ErrValidation{Msg: "login is required"}
@@ -57,7 +57,7 @@ func (s *UserService) Register(ctx context.Context, login, plainPassword string)
 	return id, nil
 }
 
-// Authenticate проверяет логин и пароль, возвращает пользователя при успехе.
+// Authenticate проверяет логин и пароль; при успехе возвращает пользователя.
 func (s *UserService) Authenticate(ctx context.Context, login, plainPassword string) (*repository.User, error) {
 	u, err := s.repo.GetByLogin(ctx, login)
 	if err != nil {

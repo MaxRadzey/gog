@@ -1,4 +1,4 @@
-// Package crypto предоставляет симметричное шифрование для данных секретов (AES-256-GCM).
+// Package crypto — шифрование и расшифровка данных (AES-256-GCM, ключ 32 байта).
 package crypto
 
 import (

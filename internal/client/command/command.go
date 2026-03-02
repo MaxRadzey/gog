@@ -1,11 +1,13 @@
+// Package command — команды CLI: help, register, login, logout, secret-list/get/create/update/delete.
+// Каждая команда реализует интерфейс Command и вызывается по имени из реестра.
 package command
 
 import "context"
 
-// Command — команда CLI с методом Execute.
+// Command — одна команда: принимает контекст и аргументы, возвращает строку или ошибку.
 type Command interface {
 	Execute(ctx context.Context, args []string) (string, error)
 }
 
-// CommandRegistry — реестр команд по имени (имя команды → команда).
+// CommandRegistry — карта имя команды → команда (используется в CLI для вызова по имени).
 type CommandRegistry map[string]Command

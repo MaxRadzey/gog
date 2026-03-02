@@ -30,7 +30,7 @@ func (r *loggingResponseWriter) WriteHeader(statusCode int) {
 	r.responseData.status = statusCode
 }
 
-// RequestLogger возвращает Gin middleware для логирования входящих запросов.
+// RequestLogger логирует каждый входящий запрос (URI, method, duration).
 func RequestLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
@@ -46,7 +46,7 @@ func RequestLogger() gin.HandlerFunc {
 	}
 }
 
-// ResponseLogger возвращает Gin middleware для логирования ответов (status, size).
+// ResponseLogger логирует ответ: status code и размер тела.
 func ResponseLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		responseData := &responseData{

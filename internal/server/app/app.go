@@ -1,4 +1,4 @@
-// Package app собирает логгер, хранилище, сервисы и запускает HTTP-сервер с graceful shutdown.
+// Package app — точка входа сервера: инициализация логгера, БД, сервисов и HTTP-сервера с graceful shutdown.
 package app
 
 import (
@@ -20,14 +20,14 @@ import (
 
 const shutdownTimeout = 30 * time.Second
 
-// App — приложение: конфиг, HTTP-сервер и хранилище.
+// App хранит конфиг, HTTP-сервер и хранилище БД.
 type App struct {
 	config  *config.Config
 	server  *http.Server
 	storage *storage.Storage
 }
 
-// New создаёт приложение: инициализирует логгер, хранилище, сервисы и HTTP-сервер.
+// New поднимает логгер, подключает БД, создаёт сервисы и роутер, возвращает приложение.
 func New(cfg *config.Config) (*App, error) {
 	if err := logger.Initialize(cfg.LogLevel); err != nil {
 		return nil, err
@@ -54,7 +54,7 @@ func New(cfg *config.Config) (*App, error) {
 	}, nil
 }
 
-// Run запускает сервер, ждёт сигнал завершения (SIGTERM, SIGINT, SIGQUIT) и корректно останавливает приложение.
+// Run запускает HTTP-сервер, ждёт SIGTERM/SIGINT/SIGQUIT и выполняет graceful shutdown.
 func (a *App) Run() error {
 	a.startServer()
 	<-a.shutdownSignal()

@@ -2,8 +2,8 @@ package crypto
 
 import "errors"
 
-// ErrKeyLength — ключ должен быть 32 байта (AES-256).
+// ErrKeyLength возвращается, если ключ не 32 байта.
 var ErrKeyLength = errors.New("encryption key must be 32 bytes")
 
-// ErrDecrypt — не удалось расшифровать (неверный ключ или повреждённые данные).
+// ErrDecrypt возвращается при ошибке расшифровки (неверный ключ или битые данные).
 var ErrDecrypt = errors.New("decryption failed")

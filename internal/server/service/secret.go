@@ -9,7 +9,7 @@ import (
 	"github.com/MaxRadzey/gog/internal/server/repository"
 )
 
-// SecretDTO — секрет с расшифрованными данными для отдачи клиенту.
+// SecretDTO — секрет с расшифрованными данными (отдаётся в API).
 type SecretDTO struct {
 	ID         int64
 	UserID     int64
@@ -19,13 +19,13 @@ type SecretDTO struct {
 	UpdatedAt  string
 }
 
-// SecretService — бизнес-логика работы с секретами.
+// SecretService — создание, чтение, обновление и удаление секретов; валидация по типу, шифрование при записи.
 type SecretService struct {
 	repo repository.SecretRepository
 	key  []byte
 }
 
-// NewSecretService создаёт сервис секретов.
+// NewSecretService создаёт сервис с переданным репозиторием и ключом шифрования.
 func NewSecretService(repo repository.SecretRepository, key []byte) *SecretService {
 	return &SecretService{repo: repo, key: key}
 }

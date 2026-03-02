@@ -19,7 +19,7 @@ Commands:
   help                            — this help
 `
 
-// HelpCommand — команда вывода справки по использованию клиента.
+// HelpCommand выводит справку по командам.
 type HelpCommand struct{}
 
 // NewHelpCommand создаёт команду help.
@@ -27,7 +27,7 @@ func NewHelpCommand() *HelpCommand {
 	return &HelpCommand{}
 }
 
-// Execute возвращает текст справки.
+// Execute возвращает текст справки (helpText).
 func (c *HelpCommand) Execute(ctx context.Context, args []string) (string, error) {
 	return helpText, nil
 }

@@ -1,3 +1,4 @@
+// Package postgres — реализация репозиториев пользователей и секретов для PostgreSQL.
 package postgres
 
 import (
@@ -7,17 +8,17 @@ import (
 	"github.com/MaxRadzey/gog/internal/server/repository"
 )
 
-// UserRepository — репозиторий пользователей в PostgreSQL.
+// UserRepository хранит и читает пользователей в таблице users.
 type UserRepository struct {
 	db *sql.DB
 }
 
-// NewUserRepository создаёт репозиторий пользователей.
+// NewUserRepository создаёт репозиторий по переданному *sql.DB.
 func NewUserRepository(db *sql.DB) *UserRepository {
 	return &UserRepository{db: db}
 }
 
-// Create сохраняет пользователя и возвращает его id.
+// Create вставляет пользователя (login, password_hash), возвращает id.
 func (r *UserRepository) Create(ctx context.Context, login, passwordHash string) (int64, error) {
 	var id int64
 	err := r.db.QueryRowContext(ctx,
@@ -30,7 +31,7 @@ func (r *UserRepository) Create(ctx context.Context, login, passwordHash string)
 	return id, nil
 }
 
-// GetByLogin возвращает пользователя по логину (только не удалённого).
+// GetByLogin возвращает пользователя по логину; не удалённого.
 func (r *UserRepository) GetByLogin(ctx context.Context, login string) (*repository.User, error) {
 	var u repository.User
 	err := r.db.QueryRowContext(ctx,
@@ -48,7 +49,7 @@ func (r *UserRepository) GetByLogin(ctx context.Context, login string) (*reposit
 	return &u, nil
 }
 
-// GetByID возвращает пользователя по id (только не удалённого).
+// GetByID возвращает пользователя по id; не удалённого.
 func (r *UserRepository) GetByID(ctx context.Context, id int64) (*repository.User, error) {
 	var u repository.User
 	err := r.db.QueryRowContext(ctx,

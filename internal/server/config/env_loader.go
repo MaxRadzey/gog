@@ -4,7 +4,7 @@ import (
 	"os"
 )
 
-// ParseEnv подставляет в config значения из переменных окружения.
+// ParseEnv заполняет конфиг из SERVER_ADDRESS, LOG_LEVEL, DATABASE_DSN, SECRET_KEY, ENCRYPTION_KEY (если заданы).
 func ParseEnv(config *Config) {
 	if Address := os.Getenv("SERVER_ADDRESS"); Address != "" {
 		config.Address = Address

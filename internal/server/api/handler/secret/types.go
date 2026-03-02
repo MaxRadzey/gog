@@ -2,23 +2,23 @@ package secret
 
 import "encoding/json"
 
-// CreateRequest — тело запроса создания секрета.
+// CreateRequest — запрос на создание секрета (тип + data в JSON).
 type CreateRequest struct {
 	SecretType string          `json:"secret_type" binding:"required"`
 	Data       json.RawMessage `json:"data" binding:"required"`
 }
 
-// CreateResponse — ответ после создания секрета.
+// CreateResponse — ответ создания, возвращает id секрета.
 type CreateResponse struct {
 	ID int64 `json:"id"`
 }
 
-// UpdateRequest — тело запроса обновления секрета (только data).
+// UpdateRequest — обновление секрета, только поле data.
 type UpdateRequest struct {
 	Data json.RawMessage `json:"data" binding:"required"`
 }
 
-// SecretResponse — один секрет в ответе (data — расшифрованный JSON).
+// SecretResponse — один секрет в ответе API (data — JSON payload).
 type SecretResponse struct {
 	ID         int64           `json:"id"`
 	UserID     int64           `json:"user_id"`

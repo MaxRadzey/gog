@@ -15,11 +15,10 @@ func (e *ErrBadRequest) Error() string {
 	return fmt.Sprintf("bad request: %d", e.StatusCode)
 }
 
-// ErrServer — ошибка на стороне сервера (5xx).
-// Проверка: errors.As(err, &http_client.ErrServer{}).
+// ErrServer — ошибка сервера (5xx).
 type ErrServer struct {
-	StatusCode int    // HTTP-код ответа
-	Message    string // сообщение из поля "error" в JSON
+	StatusCode int    // HTTP-код
+	Message    string // текст из JSON "error"
 }
 
 func (e *ErrServer) Error() string {

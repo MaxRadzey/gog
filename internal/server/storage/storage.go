@@ -1,3 +1,4 @@
+// Package storage — подключение к PostgreSQL: миграции, пул соединений, доступ к репозиториям пользователей и секретов.
 package storage
 
 import (
@@ -10,7 +11,7 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-// StorageOption — функция для настройки Storage.
+// StorageOption задаёт опции при инициализации (путь к миграциям, лимиты соединений).
 type StorageOption func(*storageConfig)
 
 type storageConfig struct {
@@ -57,7 +58,7 @@ func (s *Storage) SecretRepository() repository.SecretRepository {
 	return s.secretRepository
 }
 
-// InitializeStorage запускает миграции, подключается к БД и создаёт репозитории.
+// InitializeStorage запускает миграции по DSN, открывает соединение с БД и создаёт репозитории.
 func InitializeStorage(dsn string, opts ...StorageOption) (*Storage, error) {
 	if dsn == "" {
 		return nil, errors.New("database DSN required")
@@ -98,7 +99,7 @@ func InitializeStorage(dsn string, opts ...StorageOption) (*Storage, error) {
 	}, nil
 }
 
-// Close закрывает подключение к БД.
+// Close закрывает пул соединений с БД.
 func (s *Storage) Close() error {
 	if s == nil || s.db == nil {
 		return nil

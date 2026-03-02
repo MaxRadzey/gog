@@ -1,4 +1,3 @@
-// загрузка конфигурации из JSON (CONFIG, -c, -config).
 package config
 
 import (
@@ -16,7 +15,7 @@ type fileConfig struct {
 	SigningKey  *string `json:"secret_key"`
 }
 
-// ParseFile заполняет config значениями из JSON-файла.
+// ParseFile читает JSON-файл (путь из getConfigPath) и заполняет config.
 func ParseFile(config *Config) {
 	path := getConfigPath()
 	if path == "" {
@@ -51,7 +50,7 @@ func ParseFile(config *Config) {
 
 }
 
-// getConfigPath возвращает путь к JSON-конфигу из CONFIG или флагов -c/-config.
+// getConfigPath возвращает путь к конфигу: переменная CONFIG или флаги -c, -config.
 func getConfigPath() string {
 	if envPath := os.Getenv("CONFIG"); envPath != "" {
 		return envPath

@@ -1,3 +1,4 @@
+// Package api — маршруты HTTP API: /api/user (register, login, logout) и /api/secret (CRUD с авторизацией).
 package api
 
 import (
@@ -9,7 +10,7 @@ import (
 	"github.com/MaxRadzey/gog/internal/server/api/middleware"
 )
 
-// SetupRouter создаёт Gin-роутер.
+// SetupRouter собирает роутер Gin с recovery, логгером и маршрутами API.
 func SetupRouter(h *handler.Handler) *gin.Engine {
 	r := gin.New()
 

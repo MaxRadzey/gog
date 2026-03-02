@@ -6,10 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// KeyUserID — ключ в gin.Context для userID после проверки куки.
+// KeyUserID — ключ в gin.Context, в который RequireAuth кладёт userID.
 const KeyUserID = "user_id"
 
-// GetUserID достаёт userID из контекста (устанавливается RequireAuth).
+// GetUserID возвращает userID из контекста; если нет — ошибка.
 func GetUserID(c *gin.Context) (int64, error) {
 	v, ok := c.Get(KeyUserID)
 	if !ok {

@@ -1,4 +1,4 @@
-// Package app собирает конфиг, логгер, HTTP-клиент, реестр команд и запускает CLI.
+// Package app — точка входа клиента: инициализация логгера и HTTP-клиента, сборка реестра команд и запуск интерактивного CLI.
 package app
 
 import (
@@ -11,13 +11,13 @@ import (
 	"github.com/MaxRadzey/gog/internal/logger"
 )
 
-// App — клиентское приложение: конфиг и HTTP-клиент.
+// App хранит конфиг и HTTP-клиент; реестр команд собирается в Run.
 type App struct {
 	cfg    *config.Config
 	client *http_client.Client
 }
 
-// New создаёт приложение: инициализирует логгер и HTTP-клиент, собирает реестр команд.
+// New инициализирует логгер и HTTP-клиент по конфигу, возвращает приложение.
 func New(cfg *config.Config) (*App, error) {
 	if err := logger.Initialize("info"); err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ func New(cfg *config.Config) (*App, error) {
 	return &App{cfg: cfg, client: client}, nil
 }
 
-// Run запускает интерактивный CLI с реестром команд.
+// Run запускает цикл CLI (чтение команд из stdin и выполнение).
 func (a *App) Run() error {
 	registry := command.CommandRegistry{
 		"help":          command.NewHelpCommand(),

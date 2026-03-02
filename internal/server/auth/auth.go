@@ -1,3 +1,4 @@
+// Package auth — сессионные куки: подпись HMAC-SHA256, установка/проверка/очистка.
 package auth
 
 import (
@@ -11,9 +12,10 @@ import (
 	"time"
 )
 
+// CookieName — имя куки сессии.
 const CookieName = "session"
 
-// SetAuthCookie выставляет подписанную куку с userID (ID пользователя из БД).
+// SetAuthCookie выставляет подписанную куку с userID.
 func SetAuthCookie(w http.ResponseWriter, userID int64, secret string) {
 	value := cookieValue(userID, secret)
 	cookie := &http.Cookie{
@@ -27,7 +29,7 @@ func SetAuthCookie(w http.ResponseWriter, userID int64, secret string) {
 	http.SetCookie(w, cookie)
 }
 
-// ValidateCookie проверяет подпись куки и возвращает userID. При невалидной куке — ошибка.
+// ValidateCookie проверяет подпись куки и возвращает userID; при невалидной куке — ошибка.
 func ValidateCookie(cookie *http.Cookie, secret string) (int64, error) {
 	if cookie == nil || cookie.Value == "" {
 		return 0, errors.New("empty cookie value")
@@ -49,7 +51,7 @@ func ValidateCookie(cookie *http.Cookie, secret string) (int64, error) {
 	return userID, nil
 }
 
-// ClearAuthCookie удаляет куку сессии (устанавливает пустое значение и истекающий срок).
+// ClearAuthCookie сбрасывает куку сессии (пустое значение, MaxAge -1).
 func ClearAuthCookie(w http.ResponseWriter) {
 	cookie := &http.Cookie{
 		Name:     CookieName,
@@ -62,7 +64,7 @@ func ClearAuthCookie(w http.ResponseWriter) {
 	http.SetCookie(w, cookie)
 }
 
-// NewCookie возвращает подписанную куку для userID. Используется в тестах.
+// NewCookie возвращает подписанную куку для userID (удобно для тестов).
 func NewCookie(userID int64, secret string) *http.Cookie {
 	value := cookieValue(userID, secret)
 	return &http.Cookie{
