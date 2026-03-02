@@ -4,10 +4,13 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/cookiejar"
 	"strconv"
+	"strings"
+	"time"
 )
 
 // Client — HTTP-клиент к API GophKeeper.
@@ -15,6 +18,9 @@ type Client struct {
 	baseURL string
 	http    *http.Client
 }
+
+// RequestTimeout — таймаут на один HTTP-запрос.
+const RequestTimeout = 5 * time.Second
 
 // New создаёт клиент.
 func New(baseURL string) (*Client, error) {
@@ -25,9 +31,24 @@ func New(baseURL string) (*Client, error) {
 	return &Client{
 		baseURL: baseURL,
 		http: &http.Client{
-			Jar: jar,
+			Jar:     jar,
+			Timeout: RequestTimeout,
 		},
 	}, nil
+}
+
+// userFacingRequestError заменяет внутренние ошибки запроса (таймаут, connection refused) на короткое сообщение.
+func userFacingRequestError(err error) error {
+	if err == nil {
+		return nil
+	}
+	if errors.Is(err, context.DeadlineExceeded) || strings.Contains(err.Error(), "Timeout") {
+		return errors.New("server is not responding")
+	}
+	if strings.Contains(err.Error(), "connection refused") || strings.Contains(err.Error(), "connection reset") {
+		return errors.New("server is unavailable")
+	}
+	return errors.New("request to server failed")
 }
 
 // parseErrorResponse читает тело ответа и возвращает ErrBadRequest (4xx) или ErrServer (5xx).
@@ -58,7 +79,7 @@ func (c *Client) Register(ctx context.Context, login, password string) error {
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := c.http.Do(req)
 	if err != nil {
-		return err
+		return userFacingRequestError(err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode == http.StatusOK {
@@ -81,7 +102,7 @@ func (c *Client) Login(ctx context.Context, login, password string) error {
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := c.http.Do(req)
 	if err != nil {
-		return err
+		return userFacingRequestError(err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode == http.StatusOK {
@@ -98,7 +119,7 @@ func (c *Client) Logout(ctx context.Context) error {
 	}
 	resp, err := c.http.Do(req)
 	if err != nil {
-		return err
+		return userFacingRequestError(err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode == http.StatusOK {
@@ -121,7 +142,7 @@ func (c *Client) CreateSecret(ctx context.Context, secretType string, data json.
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := c.http.Do(req)
 	if err != nil {
-		return 0, err
+		return 0, userFacingRequestError(err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode == http.StatusCreated {
@@ -142,7 +163,7 @@ func (c *Client) ListSecrets(ctx context.Context) ([]SecretResponse, error) {
 	}
 	resp, err := c.http.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, userFacingRequestError(err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
@@ -163,7 +184,7 @@ func (c *Client) GetSecret(ctx context.Context, id int64) (*SecretResponse, erro
 	}
 	resp, err := c.http.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, userFacingRequestError(err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode == http.StatusOK {
@@ -190,7 +211,7 @@ func (c *Client) UpdateSecret(ctx context.Context, id int64, data json.RawMessag
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := c.http.Do(req)
 	if err != nil {
-		return err
+		return userFacingRequestError(err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode == http.StatusOK {
@@ -207,7 +228,7 @@ func (c *Client) DeleteSecret(ctx context.Context, id int64) error {
 	}
 	resp, err := c.http.Do(req)
 	if err != nil {
-		return err
+		return userFacingRequestError(err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode == http.StatusOK {
