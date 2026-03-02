@@ -10,6 +10,7 @@ import (
 	"go.uber.org/mock/gomock"
 
 	"github.com/MaxRadzey/gog/internal/auth"
+	"github.com/MaxRadzey/gog/internal/constant"
 	"github.com/MaxRadzey/gog/internal/crypto"
 	"github.com/MaxRadzey/gog/internal/repository"
 	"github.com/MaxRadzey/gog/internal/repository/mocks"
@@ -50,7 +51,7 @@ func TestSecret_Create_Success(t *testing.T) {
 
 	router, secretRepo := setupSecretRouter(t, ctrl)
 	secretRepo.EXPECT().
-		Create(gomock.Any(), int64(1), service.SecretTypeLoginPassword, gomock.Any()).
+		Create(gomock.Any(), int64(1), constant.SecretTypeLoginPassword, gomock.Any()).
 		Return(int64(1), nil)
 
 	body := `{"secret_type":"login_password","data":{"login":"u","password":"p"}}`
@@ -137,7 +138,7 @@ func TestSecret_GetByID_Success(t *testing.T) {
 	secretRepo.EXPECT().
 		GetByID(gomock.Any(), int64(1), int64(1)).
 		Return(&repository.Secret{
-			ID: 1, UserID: 1, SecretType: service.SecretTypeText, Data: encrypted,
+			ID: 1, UserID: 1, SecretType: constant.SecretTypeText, Data: encrypted,
 		}, nil)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/secret/1", nil)

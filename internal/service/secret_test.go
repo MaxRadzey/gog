@@ -8,6 +8,7 @@ import (
 
 	"go.uber.org/mock/gomock"
 
+	"github.com/MaxRadzey/gog/internal/constant"
 	"github.com/MaxRadzey/gog/internal/crypto"
 	"github.com/MaxRadzey/gog/internal/repository"
 	"github.com/MaxRadzey/gog/internal/repository/mocks"
@@ -24,10 +25,10 @@ func TestSecretService_Create(t *testing.T) {
 
 	payload := []byte(`{"login":"u","password":"p"}`)
 	repo.EXPECT().
-		Create(gomock.Any(), int64(1), SecretTypeLoginPassword, gomock.Any()).
+		Create(gomock.Any(), int64(1), constant.SecretTypeLoginPassword, gomock.Any()).
 		Return(int64(1), nil)
 
-	_, err := svc.Create(ctx, 1, SecretTypeLoginPassword, payload)
+	_, err := svc.Create(ctx, 1, constant.SecretTypeLoginPassword, payload)
 	if err != nil {
 		t.Fatalf("Create: %v", err)
 	}
@@ -40,7 +41,7 @@ func TestSecretService_Create_ValidationError(t *testing.T) {
 	repo := mocks.NewMockSecretRepository(ctrl)
 	svc := NewSecretService(repo, testEncryptionKey)
 
-	_, err := svc.Create(ctx, 1, SecretTypeLoginPassword, []byte(`{}`))
+	_, err := svc.Create(ctx, 1, constant.SecretTypeLoginPassword, []byte(`{}`))
 	if err == nil {
 		t.Fatal("expected validation error")
 	}
@@ -68,7 +69,7 @@ func TestSecretService_GetByID(t *testing.T) {
 	plain := []byte(`{"login":"a","password":"b"}`)
 	encrypted, _ := crypto.Encrypt(plain, testEncryptionKey)
 	secret := &repository.Secret{
-		ID: 1, UserID: 1, SecretType: SecretTypeLoginPassword, Data: encrypted,
+		ID: 1, UserID: 1, SecretType: constant.SecretTypeLoginPassword, Data: encrypted,
 		CreatedAt: time.Now(), UpdatedAt: time.Now(), IsDeleted: false,
 	}
 
@@ -78,7 +79,7 @@ func TestSecretService_GetByID(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GetByID: %v", err)
 	}
-	if dto.ID != 1 || dto.SecretType != SecretTypeLoginPassword {
+	if dto.ID != 1 || dto.SecretType != constant.SecretTypeLoginPassword {
 		t.Errorf("dto: id=%d type=%s", dto.ID, dto.SecretType)
 	}
 	if string(dto.Data) != string(plain) {
@@ -111,7 +112,7 @@ func TestSecretService_ListByUserID(t *testing.T) {
 	plain := []byte(`{"content":"note"}`)
 	encrypted, _ := crypto.Encrypt(plain, testEncryptionKey)
 	list := []*repository.Secret{
-		{ID: 1, UserID: 1, SecretType: SecretTypeText, Data: encrypted, CreatedAt: time.Now(), UpdatedAt: time.Now(), IsDeleted: false},
+		{ID: 1, UserID: 1, SecretType: constant.SecretTypeText, Data: encrypted, CreatedAt: time.Now(), UpdatedAt: time.Now(), IsDeleted: false},
 	}
 
 	repo.EXPECT().ListByUserID(ctx, int64(1)).Return(list, nil)
@@ -134,7 +135,7 @@ func TestSecretService_Update(t *testing.T) {
 
 	plain := []byte(`{"login":"old","password":"old"}`)
 	encrypted, _ := crypto.Encrypt(plain, testEncryptionKey)
-	existing := &repository.Secret{ID: 1, UserID: 1, SecretType: SecretTypeLoginPassword, Data: encrypted, CreatedAt: time.Now(), UpdatedAt: time.Now(), IsDeleted: false}
+	existing := &repository.Secret{ID: 1, UserID: 1, SecretType: constant.SecretTypeLoginPassword, Data: encrypted, CreatedAt: time.Now(), UpdatedAt: time.Now(), IsDeleted: false}
 	newPayload := []byte(`{"login":"new","password":"new"}`)
 
 	repo.EXPECT().GetByID(ctx, int64(1), int64(1)).Return(existing, nil)

@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/MaxRadzey/gog/internal/constant"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -21,14 +22,6 @@ func init() {
 		return expiryRegex.MatchString(fl.Field().String())
 	})
 }
-
-// Константы типов секретов (в БД хранится строка, enum только в коде).
-const (
-	SecretTypeLoginPassword = "login_password"
-	SecretTypeText          = "text"
-	SecretTypeBinary        = "binary"
-	SecretTypeBankCard      = "bank_card"
-)
 
 // LoginPasswordPayload — данные для типа login_password. Обязательные: Login, Password.
 type LoginPasswordPayload struct {
@@ -106,25 +99,25 @@ func UnknownSecretTypeError(secretType string) error {
 // ValidatePayloadByType разбирает payloadJSON по secretType, валидирует и возвращает ошибку при неверных данных.
 func ValidatePayloadByType(secretType string, payloadJSON []byte) error {
 	switch secretType {
-	case SecretTypeLoginPassword:
+	case constant.SecretTypeLoginPassword:
 		var p LoginPasswordPayload
 		if err := json.Unmarshal(payloadJSON, &p); err != nil {
 			return &ErrValidation{Msg: "invalid JSON: " + err.Error()}
 		}
 		return ValidateLoginPasswordPayload(&p)
-	case SecretTypeText:
+	case constant.SecretTypeText:
 		var p TextPayload
 		if err := json.Unmarshal(payloadJSON, &p); err != nil {
 			return &ErrValidation{Msg: "invalid JSON: " + err.Error()}
 		}
 		return ValidateTextPayload(&p)
-	case SecretTypeBinary:
+	case constant.SecretTypeBinary:
 		var p BinaryPayload
 		if err := json.Unmarshal(payloadJSON, &p); err != nil {
 			return &ErrValidation{Msg: "invalid JSON: " + err.Error()}
 		}
 		return ValidateBinaryPayload(&p)
-	case SecretTypeBankCard:
+	case constant.SecretTypeBankCard:
 		var p BankCardPayload
 		if err := json.Unmarshal(payloadJSON, &p); err != nil {
 			return &ErrValidation{Msg: "invalid JSON: " + err.Error()}
