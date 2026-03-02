@@ -1,25 +1,23 @@
-package logger
+package middleware
 
 import (
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+
+	"github.com/MaxRadzey/gog/internal/logger"
 )
 
-var Log *zap.Logger = zap.NewNop()
+type responseData struct {
+	status int
+	size   int
+}
 
-type (
-	responseData struct {
-		status int
-		size   int
-	}
-
-	loggingResponseWriter struct {
-		gin.ResponseWriter
-		responseData *responseData
-	}
-)
+type loggingResponseWriter struct {
+	gin.ResponseWriter
+	responseData *responseData
+}
 
 func (r *loggingResponseWriter) Write(b []byte) (int, error) {
 	size, err := r.ResponseWriter.Write(b)
@@ -32,24 +30,7 @@ func (r *loggingResponseWriter) WriteHeader(statusCode int) {
 	r.responseData.status = statusCode
 }
 
-func Initialize(level string) error {
-	lvl, err := zap.ParseAtomicLevel(level)
-	if err != nil {
-		return err
-	}
-
-	cfg := zap.NewDevelopmentConfig()
-	cfg.Level = lvl
-
-	zl, err := cfg.Build()
-	if err != nil {
-		return err
-	}
-
-	Log = zl
-	return nil
-}
-
+// RequestLogger возвращает Gin middleware для логирования входящих запросов.
 func RequestLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
@@ -57,7 +38,7 @@ func RequestLogger() gin.HandlerFunc {
 		c.Next()
 
 		duration := time.Since(start)
-		Log.Info("got incoming HTTP request",
+		logger.Log.Info("got incoming HTTP request",
 			zap.String("URI", c.Request.RequestURI),
 			zap.String("method", c.Request.Method),
 			zap.Duration("duration", duration),
@@ -65,6 +46,7 @@ func RequestLogger() gin.HandlerFunc {
 	}
 }
 
+// ResponseLogger возвращает Gin middleware для логирования ответов (status, size).
 func ResponseLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		responseData := &responseData{
@@ -79,7 +61,7 @@ func ResponseLogger() gin.HandlerFunc {
 		c.Writer = lw
 		c.Next()
 
-		Log.Info("response",
+		logger.Log.Info("response",
 			zap.Int("status", lw.responseData.status),
 			zap.Int("size", lw.responseData.size),
 		)

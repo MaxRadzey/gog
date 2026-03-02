@@ -9,10 +9,10 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/MaxRadzey/gog/internal/logger"
 	"github.com/MaxRadzey/gog/internal/server/api"
 	"github.com/MaxRadzey/gog/internal/server/api/handler"
 	"github.com/MaxRadzey/gog/internal/server/config"
-	"github.com/MaxRadzey/gog/internal/server/logger"
 	"github.com/MaxRadzey/gog/internal/server/service"
 	"github.com/MaxRadzey/gog/internal/server/storage"
 	"go.uber.org/zap"

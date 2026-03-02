@@ -7,7 +7,6 @@ import (
 	"github.com/MaxRadzey/gog/internal/server/api/handler/secret"
 	"github.com/MaxRadzey/gog/internal/server/api/handler/user"
 	"github.com/MaxRadzey/gog/internal/server/api/middleware"
-	"github.com/MaxRadzey/gog/internal/server/logger"
 )
 
 // SetupRouter создаёт Gin-роутер.
@@ -15,8 +14,8 @@ func SetupRouter(h *handler.Handler) *gin.Engine {
 	r := gin.New()
 
 	r.Use(gin.Recovery())
-	r.Use(logger.RequestLogger())
-	r.Use(logger.ResponseLogger())
+	r.Use(middleware.RequestLogger())
+	r.Use(middleware.ResponseLogger())
 
 	apiGroup := r.Group("/api")
 	{
