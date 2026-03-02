@@ -1,6 +1,6 @@
 # Генерация Swagger-доки
 swag:
-	go run github.com/swaggo/swag/cmd/swag@latest init -g cmd/shortener/main.go -d . --parseInternal -o docs
+	go run github.com/swaggo/swag/cmd/swag@latest init -g cmd/server/main.go -d . --parseInternal -o docs
 
 # Форматирование кода + сортировка импортов
 fmt:
@@ -12,7 +12,7 @@ local:
 
 # Запуск приложения локально в dev-режиме (pprof на /debug/pprof)
 run:
-	go run cmd/gog/main.go
+	go run ./cmd/server
 
 # Исключения из покрытия берём из codecov.yml (ignore)
 COVER_EXCLUDE := $(shell grep -E '^\s+-\s+"' codecov.yml 2>/dev/null | sed 's/.*"\([^"]*\)".*/\1/' | tr -d '*' | tr '/' '\n' | grep -v '^$$' | sort -u | sed 's/^/\//' | sed 's/$$/|/' | tr -d '\n' | sed 's/|$$//')
