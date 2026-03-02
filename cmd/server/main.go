@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/MaxRadzey/gog/internal/app"
-	"github.com/MaxRadzey/gog/internal/config"
+	"github.com/MaxRadzey/gog/internal/server/app"
+	"github.com/MaxRadzey/gog/internal/server/config"
 )
 
 func main() {
