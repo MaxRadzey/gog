@@ -14,9 +14,11 @@ local:
 run:
 	go run cmd/gog/main.go
 
-# Запуск всех тестов одной командой
+# Запуск всех тестов с подсчётом покрытия (в конце выводится общий % покрытия)
 test:
-	go test ./... -v -count=1
+	go test ./... -v -count=1 -coverprofile=coverage.out
+	@echo "=== Покрытие тестами ==="
+	@go tool cover -func=coverage.out | grep total | awk '{print "Общий процент покрытия: " $$3}'
 
 # Генерация моков (требует mockgen в PATH).
 generate:
