@@ -33,6 +33,7 @@ func New(cfg *config.Config) (*App, error) {
 func (a *App) Run() error {
 	registry := command.CommandRegistry{
 		"help":          command.NewHelpCommand(),
+		"version":       command.NewVersionCommand(),
 		"register":      command.NewRegisterCommand(a.client),
 		"login":         command.NewLoginCommand(a.client),
 		"logout":        command.NewLogoutCommand(a.client),

@@ -16,6 +16,7 @@ Commands:
   secret-update <id> key=val [...]    — update secret
   secret-delete <id>              — delete secret
 
+  version                         — show version and build date
   help                            — this help
 `
 
