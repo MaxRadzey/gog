@@ -8,6 +8,11 @@ import (
 	"github.com/MaxRadzey/gog/internal/server/config"
 )
 
+// @title GophKeeper API
+// @version 0.0.1
+// @description HTTP API для управления зашифрованными секретами.
+// @BasePath /api
+
 func main() {
 	cfg := config.New()
 	config.ParseEnv(cfg)

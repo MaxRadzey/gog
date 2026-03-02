@@ -13,7 +13,17 @@ import (
 	"github.com/MaxRadzey/gog/internal/server/service"
 )
 
-// Create — обработчик POST /api/secret, создаёт секрет.
+// Create godoc
+// @Summary Создать секрет
+// @Tags secret
+// @Accept json
+// @Produce json
+// @Param input body CreateRequest true "Новый секрет"
+// @Success 201 {object} CreateResponse
+// @Failure 400 {object} handler.ErrorResponse
+// @Failure 401 {object} handler.ErrorResponse
+// @Failure 500 {object} handler.ErrorResponse
+// @Router /api/secret [post]
 func Create(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userID, err := handler.GetUserID(c)
@@ -40,7 +50,14 @@ func Create(h *handler.Handler) gin.HandlerFunc {
 	}
 }
 
-// List — обработчик GET /api/secret, возвращает список секретов.
+// List godoc
+// @Summary Список секретов пользователя
+// @Tags secret
+// @Produce json
+// @Success 200 {array} SecretResponse
+// @Failure 401 {object} handler.ErrorResponse
+// @Failure 500 {object} handler.ErrorResponse
+// @Router /api/secret [get]
 func List(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userID, err := handler.GetUserID(c)
@@ -61,7 +78,17 @@ func List(h *handler.Handler) gin.HandlerFunc {
 	}
 }
 
-// GetByID — обработчик GET /api/secret/:id, возвращает один секрет.
+// GetByID godoc
+// @Summary Получить секрет по ID
+// @Tags secret
+// @Produce json
+// @Param id path int true "ID секрета"
+// @Success 200 {object} SecretResponse
+// @Failure 400 {object} handler.ErrorResponse
+// @Failure 401 {object} handler.ErrorResponse
+// @Failure 404 {object} handler.ErrorResponse
+// @Failure 500 {object} handler.ErrorResponse
+// @Router /api/secret/{id} [get]
 func GetByID(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userID, err := handler.GetUserID(c)
@@ -87,7 +114,19 @@ func GetByID(h *handler.Handler) gin.HandlerFunc {
 	}
 }
 
-// Update — обработчик PUT /api/secret/:id, обновляет данные секрета.
+// Update godoc
+// @Summary Обновить секрет
+// @Tags secret
+// @Accept json
+// @Produce json
+// @Param id path int true "ID секрета"
+// @Param input body UpdateRequest true "Обновлённые данные секрета"
+// @Success 200 {string} string "OK"
+// @Failure 400 {object} handler.ErrorResponse
+// @Failure 401 {object} handler.ErrorResponse
+// @Failure 404 {object} handler.ErrorResponse
+// @Failure 500 {object} handler.ErrorResponse
+// @Router /api/secret/{id} [put]
 func Update(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userID, err := handler.GetUserID(c)
@@ -123,7 +162,17 @@ func Update(h *handler.Handler) gin.HandlerFunc {
 	}
 }
 
-// Delete — обработчик DELETE /api/secret/:id, удаляет секрет.
+// Delete godoc
+// @Summary Удалить секрет
+// @Tags secret
+// @Produce json
+// @Param id path int true "ID секрета"
+// @Success 200 {string} string "OK"
+// @Failure 400 {object} handler.ErrorResponse
+// @Failure 401 {object} handler.ErrorResponse
+// @Failure 404 {object} handler.ErrorResponse
+// @Failure 500 {object} handler.ErrorResponse
+// @Router /api/secret/{id} [delete]
 func Delete(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userID, err := handler.GetUserID(c)

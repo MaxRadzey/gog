@@ -14,7 +14,17 @@ import (
 	"github.com/MaxRadzey/gog/internal/server/service"
 )
 
-// Register — обработчик POST /api/user/register.
+// Register godoc
+// @Summary Регистрация пользователя
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param input body RegisterRequest true "Данные для регистрации"
+// @Success 200 {string} string "OK"
+// @Failure 400 {object} handler.ErrorResponse
+// @Failure 409 {object} handler.ErrorResponse
+// @Failure 500 {object} handler.ErrorResponse
+// @Router /api/user/register [post]
 func Register(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req RegisterRequest
@@ -55,7 +65,17 @@ func Register(h *handler.Handler) gin.HandlerFunc {
 	}
 }
 
-// Login — обработчик POST /api/user/login.
+// Login godoc
+// @Summary Вход пользователя
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param input body LoginRequest true "Учетные данные"
+// @Success 200 {string} string "OK"
+// @Failure 400 {object} handler.ErrorResponse
+// @Failure 401 {object} handler.ErrorResponse
+// @Failure 500 {object} handler.ErrorResponse
+// @Router /api/user/login [post]
 func Login(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req LoginRequest
@@ -78,7 +98,12 @@ func Login(h *handler.Handler) gin.HandlerFunc {
 	}
 }
 
-// Logout — обработчик POST /api/user/logout.
+// Logout godoc
+// @Summary Выход пользователя (очистка сессии)
+// @Tags user
+// @Produce json
+// @Success 200 {string} string "OK"
+// @Router /api/user/logout [post]
 func Logout(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		auth.ClearAuthCookie(c.Writer)
