@@ -1,17 +1,19 @@
-// Package config — настройки клиента: URL сервера из env (SERVER_URL) и флагов (-server, -s).
+// Package config загружает настройки клиента из переменных окружения и флагов.
 package config
+
+import "github.com/ilyakaznacheev/cleanenv"
 
 // Config хранит настройки клиента.
 type Config struct {
-	ServerURL string // базовый URL API (например http://localhost:8080)
+	ServerURL string `env:"SERVER_URL"` // базовый URL API (например http://localhost:8080)
 }
 
-// New создаёт конфиг с дефолтом, затем подставляет переменные окружения и флаги.
+// New возвращает конфиг: дефолт + переменные окружения + флаги.
 func New() *Config {
 	cfg := &Config{
 		ServerURL: "http://localhost:8080",
 	}
-	ParseEnv(cfg)
+	_ = cleanenv.ReadEnv(cfg)
 	ParseFlags(cfg)
 	return cfg
 }
