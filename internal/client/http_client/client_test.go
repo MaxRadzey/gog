@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
 
 func TestClient_GetSecret_200(t *testing.T) {
@@ -20,7 +21,7 @@ func TestClient_GetSecret_200(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, err := New(server.URL)
+	client, err := New(server.URL, 5*time.Second)
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}
@@ -44,7 +45,7 @@ func TestClient_GetSecret_404(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := New(server.URL)
+	client, _ := New(server.URL, 5*time.Second)
 	_, err := client.GetSecret(context.Background(), 999)
 	if err == nil {
 		t.Fatal("expected error")
@@ -69,7 +70,7 @@ func TestClient_GetSecret_500(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := New(server.URL)
+	client, _ := New(server.URL, 5*time.Second)
 	_, err := client.GetSecret(context.Background(), 1)
 	if err == nil {
 		t.Fatal("expected error")
@@ -92,7 +93,7 @@ func TestClient_Register_200(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := New(server.URL)
+	client, _ := New(server.URL, 5*time.Second)
 	err := client.Register(context.Background(), "user", "pass")
 	if err != nil {
 		t.Fatalf("Register: %v", err)
@@ -107,7 +108,7 @@ func TestClient_Register_500(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := New(server.URL)
+	client, _ := New(server.URL, 5*time.Second)
 	err := client.Register(context.Background(), "user", "pass")
 	if err == nil {
 		t.Fatal("expected error")
@@ -126,7 +127,7 @@ func TestClient_Login_200(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
-	client, _ := New(server.URL)
+	client, _ := New(server.URL, 5*time.Second)
 	if err := client.Login(context.Background(), "u", "p"); err != nil {
 		t.Fatalf("Login: %v", err)
 	}
@@ -137,7 +138,7 @@ func TestClient_Logout_200(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
-	client, _ := New(server.URL)
+	client, _ := New(server.URL, 5*time.Second)
 	if err := client.Logout(context.Background()); err != nil {
 		t.Fatalf("Logout: %v", err)
 	}
@@ -150,7 +151,7 @@ func TestClient_CreateSecret_201(t *testing.T) {
 		_ = json.NewEncoder(w).Encode(CreateSecretResponse{ID: 42})
 	}))
 	defer server.Close()
-	client, _ := New(server.URL)
+	client, _ := New(server.URL, 5*time.Second)
 	id, err := client.CreateSecret(context.Background(), "text", json.RawMessage(`{}`))
 	if err != nil {
 		t.Fatalf("CreateSecret: %v", err)
@@ -167,7 +168,7 @@ func TestClient_ListSecrets_200(t *testing.T) {
 		_ = json.NewEncoder(w).Encode([]SecretResponse{{ID: 1, SecretType: "text"}})
 	}))
 	defer server.Close()
-	client, _ := New(server.URL)
+	client, _ := New(server.URL, 5*time.Second)
 	list, err := client.ListSecrets(context.Background())
 	if err != nil {
 		t.Fatalf("ListSecrets: %v", err)
@@ -182,7 +183,7 @@ func TestClient_UpdateSecret_200(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
-	client, _ := New(server.URL)
+	client, _ := New(server.URL, 5*time.Second)
 	if err := client.UpdateSecret(context.Background(), 1, json.RawMessage(`{"content":"updated"}`)); err != nil {
 		t.Fatalf("UpdateSecret: %v", err)
 	}
@@ -193,7 +194,7 @@ func TestClient_DeleteSecret_200(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
-	client, _ := New(server.URL)
+	client, _ := New(server.URL, 5*time.Second)
 	if err := client.DeleteSecret(context.Background(), 1); err != nil {
 		t.Fatalf("DeleteSecret: %v", err)
 	}

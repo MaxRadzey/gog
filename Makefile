@@ -4,18 +4,22 @@ swag:
 
 # Сборка CLI-клиента под текущую ОС
 build-client:
+	@mkdir -p bin
 	go build -o bin/gog-client ./cmd/client
 
 # Сборка клиента под Linux (amd64)
 build-client-linux:
+	@mkdir -p bin
 	GOOS=linux GOARCH=amd64 go build -o bin/gog-client-linux ./cmd/client
 
 # Сборка клиента под Windows (amd64)
 build-client-windows:
+	@mkdir -p bin
 	GOOS=windows GOARCH=amd64 go build -o bin/gog-client-windows.exe ./cmd/client
 
 # Сборка клиента под macOS (Intel и Apple Silicon)
 build-client-apple:
+	@mkdir -p bin
 	GOOS=darwin GOARCH=arm64 go build -o bin/gog-client-apple ./cmd/client
 
 # Форматирование кода + сортировка импортов

@@ -13,6 +13,9 @@ type fileConfig struct {
 	DatabaseDSN *string `json:"database_dsn"`
 	LogLevel    *string `json:"log_level"`
 	SigningKey  *string `json:"secret_key"`
+	EnableHTTPS *bool   `json:"enable_https"`
+	TLSCertFile *string `json:"tls_cert_file"`
+	TLSKeyFile  *string `json:"tls_key_file"`
 }
 
 // ParseFile читает JSON-файл (путь из getConfigPath) и заполняет config.
@@ -47,7 +50,15 @@ func ParseFile(config *Config) {
 	if fc.SigningKey != nil {
 		config.SigningKey = *fc.SigningKey
 	}
-
+	if fc.EnableHTTPS != nil {
+		config.EnableHTTPS = *fc.EnableHTTPS
+	}
+	if fc.TLSCertFile != nil {
+		config.TLSCertFile = *fc.TLSCertFile
+	}
+	if fc.TLSKeyFile != nil {
+		config.TLSKeyFile = *fc.TLSKeyFile
+	}
 }
 
 // getConfigPath возвращает путь к конфигу: переменная CONFIG или флаги -c, -config.

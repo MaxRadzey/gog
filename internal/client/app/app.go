@@ -3,6 +3,7 @@ package app
 
 import (
 	"context"
+	"time"
 
 	"github.com/MaxRadzey/gog/internal/client/cli"
 	"github.com/MaxRadzey/gog/internal/client/command"
@@ -22,7 +23,7 @@ func New(cfg *config.Config) (*App, error) {
 	if err := logger.Initialize("info"); err != nil {
 		return nil, err
 	}
-	client, err := http_client.New(cfg.ServerURL)
+	client, err := http_client.New(cfg.ServerURL, 5*time.Second)
 	if err != nil {
 		return nil, err
 	}

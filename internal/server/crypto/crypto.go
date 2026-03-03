@@ -10,6 +10,14 @@ import (
 
 const aesKeyLen = 32
 
+// ValidateKey проверяет, что ключ шифрования имеет длину 32 байта. Вызывать при старте приложения.
+func ValidateKey(key []byte) error {
+	if len(key) != aesKeyLen {
+		return ErrKeyLength
+	}
+	return nil
+}
+
 // Encrypt шифрует plaintext ключом key (32 байта). Возвращает ciphertext с префиксом nonce.
 func Encrypt(plaintext, key []byte) ([]byte, error) {
 	if len(key) != aesKeyLen {

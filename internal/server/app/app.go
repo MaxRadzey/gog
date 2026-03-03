@@ -33,6 +33,10 @@ func New(cfg *config.Config) (*App, error) {
 		return nil, err
 	}
 
+	if err := config.Validate(cfg); err != nil {
+		return nil, err
+	}
+
 	storageResult, err := storage.InitializeStorage(cfg.DatabaseDSN)
 	if err != nil {
 		return nil, err
@@ -43,8 +47,12 @@ func New(cfg *config.Config) (*App, error) {
 	router := api.SetupRouter(h)
 
 	server := &http.Server{
-		Addr:    cfg.Address,
-		Handler: router,
+		Addr:              cfg.Address,
+		Handler:           router,
+		ReadTimeout:       10 * time.Second,
+		ReadHeaderTimeout: 5 * time.Second,
+		WriteTimeout:      10 * time.Second,
+		IdleTimeout:       60 * time.Second,
 	}
 
 	return &App{
@@ -64,7 +72,14 @@ func (a *App) Run() error {
 func (a *App) startServer() {
 	logger.Log.Info("Starting HTTP server", zap.String("address", a.config.Address))
 	go func() {
-		if err := a.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		var err error
+		if a.config.EnableHTTPS {
+			logger.Log.Info("HTTPS mode enabled")
+			err = a.server.ListenAndServeTLS(a.config.TLSCertFile, a.config.TLSKeyFile)
+		} else {
+			err = a.server.ListenAndServe()
+		}
+		if err != nil && err != http.ErrServerClosed {
 			logger.Log.Error("HTTP server error", zap.Error(err))
 		}
 	}()

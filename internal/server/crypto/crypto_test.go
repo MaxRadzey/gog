@@ -72,3 +72,33 @@ func TestDecrypt_TruncatedCiphertext(t *testing.T) {
 		t.Errorf("expected ErrDecrypt, got %v", err)
 	}
 }
+
+func TestValidateKey_Valid(t *testing.T) {
+	key := mustKey()
+	if err := ValidateKey(key); err != nil {
+		t.Errorf("ValidateKey(32 bytes): got %v, want nil", err)
+	}
+}
+
+func TestValidateKey_InvalidLength(t *testing.T) {
+	tests := []struct {
+		name string
+		key  []byte
+	}{
+		{"empty", []byte{}},
+		{"short", []byte("short")},
+		{"31 bytes", bytes.Repeat([]byte("x"), 31)},
+		{"33 bytes", bytes.Repeat([]byte("x"), 33)},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := ValidateKey(tt.key)
+			if err == nil {
+				t.Fatal("expected error")
+			}
+			if !errors.Is(err, ErrKeyLength) {
+				t.Errorf("expected ErrKeyLength, got %v", err)
+			}
+		})
+	}
+}

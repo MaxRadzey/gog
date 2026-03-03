@@ -28,7 +28,7 @@ func Create(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userID, err := handler.GetUserID(c)
 		if err != nil {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			handler.RespondUnauthorized(c)
 			return
 		}
 		var req CreateRequest
@@ -62,7 +62,7 @@ func List(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userID, err := handler.GetUserID(c)
 		if err != nil {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			handler.RespondUnauthorized(c)
 			return
 		}
 		list, err := h.Services.Secret.ListByUserID(c.Request.Context(), userID)
@@ -93,7 +93,7 @@ func GetByID(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userID, err := handler.GetUserID(c)
 		if err != nil {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			handler.RespondUnauthorized(c)
 			return
 		}
 		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
@@ -131,7 +131,7 @@ func Update(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userID, err := handler.GetUserID(c)
 		if err != nil {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			handler.RespondUnauthorized(c)
 			return
 		}
 		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
@@ -177,7 +177,7 @@ func Delete(h *handler.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userID, err := handler.GetUserID(c)
 		if err != nil {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			handler.RespondUnauthorized(c)
 			return
 		}
 		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
