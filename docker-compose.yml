@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: gog-postgres
+    environment:
+      POSTGRES_USER: gog
+      POSTGRES_PASSWORD: gog
+      POSTGRES_DB: gog_test
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gog -d gog_test"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+
+  server:
+      build: .
+      container_name: gog-server
+      ports:
+        - "8080:8080"
+      environment:
+        SERVER_ADDRESS: ":8080"
+        DATABASE_DSN: "postgres://gog:gog@postgres:5432/gog_test"
+        SECRET_KEY: "dev-signing-key-change-in-production"
+        ENCRYPTION_KEY: "dev-encryption-key-32bytes-long!"
+      depends_on:
+        postgres:
+          condition: service_healthy

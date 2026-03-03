@@ -1,0 +1,28 @@
+package main
+
+import (
+	"fmt"
+	"os"
+
+	"github.com/MaxRadzey/gog/internal/server/app"
+	"github.com/MaxRadzey/gog/internal/server/config"
+)
+
+// @title GophKeeper API
+// @version 0.0.1
+// @description HTTP API для управления зашифрованными секретами.
+// @BasePath /api
+
+func main() {
+	cfg := config.New()
+	a, err := app.New(cfg)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to init app: %v\n", err)
+		os.Exit(1)
+	}
+
+	if err := a.Run(); err != nil {
+		fmt.Fprintln(os.Stderr, "failed to run app", err)
+		os.Exit(1)
+	}
+}

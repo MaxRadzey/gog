@@ -1,0 +1,9 @@
+ignore:
+  - "cmd/**"
+  - "**/mocks/**"
+  - "**/constant/**"
+  - "**/logger/**"
+  - "**/config/**"
+  - "**/app/**"
+  - "**/storage/**"
+
