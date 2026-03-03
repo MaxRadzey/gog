@@ -28,11 +28,23 @@ go run ./cmd/server
 
 ### Сборка и запуск CLI‑клиента
 
-Собрать клиент:
+Собрать клиент под текущую ОС:
 
 ```bash
 go build -o gog-client ./cmd/client
 ```
+
+или через Make:
+
+```bash
+make build-client
+```
+
+**Сборка под разные платформы (Windows, Linux, macOS):**
+
+- Linux (amd64): `make build-client-linux` → `bin/gog-client-linux`
+- Windows (amd64): `make build-client-windows` → `bin/gog-client-windows.exe`
+- macOS (arm64): `make build-client-apple` → `bin/gog-client-apple`
 
 Запустить клиент (интерактивная CLI):
 

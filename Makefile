@@ -2,6 +2,22 @@
 swag:
 	go run github.com/swaggo/swag/cmd/swag@latest init -g cmd/server/main.go -d . --parseInternal -o docs
 
+# Сборка CLI-клиента под текущую ОС
+build-client:
+	go build -o bin/gog-client ./cmd/client
+
+# Сборка клиента под Linux (amd64)
+build-client-linux:
+	GOOS=linux GOARCH=amd64 go build -o bin/gog-client-linux ./cmd/client
+
+# Сборка клиента под Windows (amd64)
+build-client-windows:
+	GOOS=windows GOARCH=amd64 go build -o bin/gog-client-windows.exe ./cmd/client
+
+# Сборка клиента под macOS (Intel и Apple Silicon)
+build-client-apple:
+	GOOS=darwin GOARCH=arm64 go build -o bin/gog-client-apple ./cmd/client
+
 # Форматирование кода + сортировка импортов
 fmt:
 	go run golang.org/x/tools/cmd/goimports@latest -w .
